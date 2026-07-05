@@ -28,11 +28,21 @@ sync_skill() {
   local src="$1"
   local dest="$2"
   local tmp="${dest}.tmp-$$"
+  local tmp_ready=0
+
+  cleanup_tmp() {
+    if [ "$tmp_ready" -eq 1 ] && [ -d "$tmp" ]; then
+      rm -rf "$tmp"
+    fi
+  }
 
   if [ -e "$tmp" ]; then
     fail "Temporary install path already exists: ${tmp}"
   fi
-  mkdir -p "$tmp"
+  mkdir "$tmp"
+  tmp_ready=1
+  trap cleanup_tmp RETURN
+
   cp -R "$src/SKILL.md" "$tmp/"
   cp -R "$src/README.md" "$tmp/"
   cp -R "$src/notion-summary.md" "$tmp/"
@@ -47,6 +57,8 @@ sync_skill() {
     fail "Install destination still exists after preparation: ${dest}"
   fi
   mv "$tmp" "$dest"
+  tmp_ready=0
+  trap - RETURN
 }
 
 prepare_master_dir() {
