@@ -6,6 +6,7 @@ PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MASTER_DIR="${HOME}/.agents/skills/${SKILL_NAME}"
 CLAUDE_LINK="${HOME}/.claude/skills/${SKILL_NAME}"
 CODEX_LINK="${HOME}/.codex/skills/${SKILL_NAME}"
+MARKER_FILE=".github-governance-skill-managed"
 
 PASS_COUNT=0
 FAIL_COUNT=0
@@ -35,6 +36,27 @@ check_dir() {
     pass "Directory exists: ${path}"
   else
     fail_check "Missing directory: ${path}"
+  fi
+}
+
+check_same_file() {
+  local source_path="$1"
+  local installed_path="$2"
+
+  if [ ! -f "$source_path" ]; then
+    fail_check "Missing source file for comparison: ${source_path}"
+    return 0
+  fi
+
+  if [ ! -f "$installed_path" ]; then
+    fail_check "Missing installed file for comparison: ${installed_path}"
+    return 0
+  fi
+
+  if cmp -s "$source_path" "$installed_path"; then
+    pass "Installed content matches: ${installed_path}"
+  else
+    fail_check "Installed content differs: ${installed_path}"
   fi
 }
 
@@ -90,6 +112,16 @@ check_file "$PROJECT_DIR/examples/opencode-prompt.md"
 
 check_dir "$MASTER_DIR"
 check_file "$MASTER_DIR/SKILL.md"
+check_file "$MASTER_DIR/$MARKER_FILE"
+check_same_file "$PROJECT_DIR/SKILL.md" "$MASTER_DIR/SKILL.md"
+check_same_file "$PROJECT_DIR/README.md" "$MASTER_DIR/README.md"
+check_same_file "$PROJECT_DIR/notion-summary.md" "$MASTER_DIR/notion-summary.md"
+check_same_file "$PROJECT_DIR/docs/usage.md" "$MASTER_DIR/docs/usage.md"
+check_same_file "$PROJECT_DIR/docs/governance-rules.md" "$MASTER_DIR/docs/governance-rules.md"
+check_same_file "$PROJECT_DIR/docs/agent-compatibility.md" "$MASTER_DIR/docs/agent-compatibility.md"
+check_same_file "$PROJECT_DIR/examples/codex-prompt.md" "$MASTER_DIR/examples/codex-prompt.md"
+check_same_file "$PROJECT_DIR/examples/opencode-prompt.md" "$MASTER_DIR/examples/opencode-prompt.md"
+check_same_file "$PROJECT_DIR/agents/openai.yaml" "$MASTER_DIR/agents/openai.yaml"
 check_symlink_resolves_to "$CLAUDE_LINK" "$MASTER_DIR"
 check_symlink_resolves_to "$CODEX_LINK" "$MASTER_DIR"
 check_no_broken_symlinks "${HOME}/.claude/skills"

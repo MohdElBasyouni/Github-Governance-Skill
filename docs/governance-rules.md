@@ -26,8 +26,8 @@ Before any push, the AI agent must:
 3. Check git status.
 4. Run available repo checks.
 5. Detect repo-specific commands from common project files.
-6. Run Agency Agents Code Reviewer where available.
-7. Run CodeRabbit where available.
+6. Run Agency Agents Code Reviewer where available; if unavailable, report that explicitly.
+7. Run CodeRabbit where available; if unavailable, report that explicitly.
 8. Use Plannotator only for planning or annotation when useful.
 9. Run any other configured review skill or tool from repo instructions.
 
@@ -53,11 +53,11 @@ The agent must not report completion while required checks are pending or failed
 
 ## Review Comments
 
-Read all comments from CodeRabbit, human reviewers, GitHub bots, and other tools. Address every actionable comment, reply inline where possible, and summarize the outcome.
+Read all comments from CodeRabbit, human reviewers, GitHub bots, and other tools. Address every actionable comment, reply inline where possible, record why when inline reply is not possible, and summarize the outcome.
 
 ## Merge And Cleanup
 
-Merge only after explicit Mohamed consent. Sync the target branch, verify green checks, merge by repo convention, pull latest target branch, delete merged local branches, and delete remote branches only when safe and allowed.
+Merge only after explicit Mohamed consent. Sync the target branch, verify green checks, merge by repo convention, pull latest target branch, delete local branches only after confirming they are merged, and delete remote branches only when safe, confirmed merged, not protected, and explicitly allowed by Mohamed.
 
 ## Stop And Ask
 

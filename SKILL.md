@@ -34,8 +34,8 @@ If on `main` or `master`, refuse direct work and create a compliant branch befor
 3. Check `git status --short`.
 4. Detect and run repo checks that exist, such as tests, lint, analyze, typecheck, format check, and build.
 5. Discover commands from repo files including `package.json`, `pyproject.toml`, `Makefile`, `justfile`, `pubspec.yaml`, `go.mod`, `Cargo.toml`, and project instructions.
-6. Run Agency Agents Code Reviewer when available.
-7. Run CodeRabbit when available and explicitly requested or configured.
+6. Run Agency Agents Code Reviewer when available; if unavailable, report that explicitly.
+7. Run CodeRabbit when available; if unavailable, report that explicitly.
 8. Use Plannotator for planning or annotation when useful, never as a replacement for code review.
 9. Run any other configured review skill/tool named in repo instructions.
 
@@ -56,6 +56,7 @@ For CodeRabbit, human reviewers, GitHub bots, and other review tools:
 - Classify each as actionable or non-actionable.
 - Address every actionable comment.
 - Reply inline where possible.
+- If inline reply is not possible, record why and summarize the resolution in the PR or final report.
 - Do not ignore unresolved review comments.
 - Re-run checks after changes.
 - Summarize what was addressed.
@@ -70,8 +71,8 @@ Only when Mohamed explicitly instructs a merge to `main` or `master`:
 4. Verify PR checks are green.
 5. Merge using the repo's standard method.
 6. Pull latest target branch after merge.
-7. Delete merged local branches.
-8. Delete remote branches only when safe and explicitly allowed.
+7. Delete local branches only after confirming they are merged.
+8. Delete remote branches only when safe, confirmed merged, not protected, and explicitly allowed by Mohamed.
 9. Never delete protected, active, unknown, or unmerged branches.
 10. Report branch cleanup clearly.
 

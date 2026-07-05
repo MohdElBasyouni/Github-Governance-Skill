@@ -6,6 +6,7 @@ SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MASTER_DIR="${HOME}/.agents/skills/${SKILL_NAME}"
 CLAUDE_LINK="${HOME}/.claude/skills/${SKILL_NAME}"
 CODEX_LINK="${HOME}/.codex/skills/${SKILL_NAME}"
+MARKER_FILE=".github-governance-skill-managed"
 
 log() {
   printf '%s\n' "$*"
@@ -20,25 +21,35 @@ backup_path() {
   local path="$1"
   local stamp
   stamp="$(date +%Y%m%d-%H%M%S)"
-  printf '%s.backup-%s' "$path" "$stamp"
+  printf '%s.backup-%s-%s' "$path" "$stamp" "$$"
 }
 
 sync_skill() {
   local src="$1"
   local dest="$2"
+  local tmp="${dest}.tmp-$$"
 
-  mkdir -p "$dest"
-  cp -R "$src/SKILL.md" "$dest/"
-  cp -R "$src/README.md" "$dest/"
-  cp -R "$src/notion-summary.md" "$dest/"
-  cp -R "$src/docs" "$dest/"
-  cp -R "$src/examples" "$dest/"
+  rm -rf "$tmp"
+  mkdir -p "$tmp"
+  cp -R "$src/SKILL.md" "$tmp/"
+  cp -R "$src/README.md" "$tmp/"
+  cp -R "$src/notion-summary.md" "$tmp/"
+  cp -R "$src/docs" "$tmp/"
+  cp -R "$src/examples" "$tmp/"
   if [ -d "$src/agents" ]; then
-    cp -R "$src/agents" "$dest/"
+    cp -R "$src/agents" "$tmp/"
   fi
+  printf 'managed by %s install.sh\n' "$SKILL_NAME" > "$tmp/$MARKER_FILE"
+
+  if [ -e "$dest" ]; then
+    rm -rf "$dest"
+  fi
+  mv "$tmp" "$dest"
 }
 
 prepare_master_dir() {
+  mkdir -p "$(dirname "$MASTER_DIR")"
+
   if [ -L "$MASTER_DIR" ]; then
     local resolved
     resolved="$(readlink "$MASTER_DIR")"
@@ -46,14 +57,21 @@ prepare_master_dir() {
     backup="$(backup_path "$MASTER_DIR")"
     mv "$MASTER_DIR" "$backup"
     log "Backed up existing master symlink ${MASTER_DIR} -> ${resolved} to ${backup}"
-  elif [ -e "$MASTER_DIR" ] && [ ! -d "$MASTER_DIR" ]; then
+  elif [ -d "$MASTER_DIR" ]; then
+    if [ -f "$MASTER_DIR/$MARKER_FILE" ]; then
+      log "Replacing managed install: ${MASTER_DIR}"
+    else
+      local backup
+      backup="$(backup_path "$MASTER_DIR")"
+      mv "$MASTER_DIR" "$backup"
+      log "Backed up existing non-symlink directory ${MASTER_DIR} to ${backup}"
+    fi
+  elif [ -e "$MASTER_DIR" ]; then
     local backup
     backup="$(backup_path "$MASTER_DIR")"
     mv "$MASTER_DIR" "$backup"
     log "Backed up existing non-directory ${MASTER_DIR} to ${backup}"
   fi
-
-  mkdir -p "$(dirname "$MASTER_DIR")"
 }
 
 create_skill_link() {

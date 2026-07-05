@@ -24,6 +24,12 @@ OpenCode can use this skill through global or project instructions. Add a projec
 Use the github-governance-skill workflow for all git, PR, review, and merge operations.
 ```
 
+Suggested placement:
+
+- Global OpenCode agent instructions for account-wide behavior.
+- Project `AGENTS.md` or OpenCode instruction files for repository-specific behavior.
+- Repo onboarding docs when a project needs human-visible governance rules.
+
 For project-level OpenCode agents, reference the master path:
 
 ```text
