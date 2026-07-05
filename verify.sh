@@ -60,6 +60,28 @@ check_same_file() {
   fi
 }
 
+check_same_dir() {
+  local source_dir="$1"
+  local installed_dir="$2"
+
+  if [ ! -d "$source_dir" ]; then
+    fail_check "Missing source directory for comparison: ${source_dir}"
+    return 0
+  fi
+
+  if [ ! -d "$installed_dir" ]; then
+    fail_check "Missing installed directory for comparison: ${installed_dir}"
+    return 0
+  fi
+
+  if diff -qr "$source_dir" "$installed_dir" >/dev/null; then
+    pass "Installed directory matches: ${installed_dir}"
+  else
+    fail_check "Installed directory differs: ${installed_dir}"
+    diff -qr "$source_dir" "$installed_dir" >&2 || true
+  fi
+}
+
 check_symlink_resolves_to() {
   local link_path="$1"
   local expected_target="$2"
@@ -122,6 +144,9 @@ check_same_file "$PROJECT_DIR/docs/agent-compatibility.md" "$MASTER_DIR/docs/age
 check_same_file "$PROJECT_DIR/examples/codex-prompt.md" "$MASTER_DIR/examples/codex-prompt.md"
 check_same_file "$PROJECT_DIR/examples/opencode-prompt.md" "$MASTER_DIR/examples/opencode-prompt.md"
 check_same_file "$PROJECT_DIR/agents/openai.yaml" "$MASTER_DIR/agents/openai.yaml"
+check_same_dir "$PROJECT_DIR/docs" "$MASTER_DIR/docs"
+check_same_dir "$PROJECT_DIR/examples" "$MASTER_DIR/examples"
+check_same_dir "$PROJECT_DIR/agents" "$MASTER_DIR/agents"
 check_symlink_resolves_to "$CLAUDE_LINK" "$MASTER_DIR"
 check_symlink_resolves_to "$CODEX_LINK" "$MASTER_DIR"
 check_no_broken_symlinks "${HOME}/.claude/skills"

@@ -29,7 +29,9 @@ sync_skill() {
   local dest="$2"
   local tmp="${dest}.tmp-$$"
 
-  rm -rf "$tmp"
+  if [ -e "$tmp" ]; then
+    fail "Temporary install path already exists: ${tmp}"
+  fi
   mkdir -p "$tmp"
   cp -R "$src/SKILL.md" "$tmp/"
   cp -R "$src/README.md" "$tmp/"
@@ -42,7 +44,7 @@ sync_skill() {
   printf 'managed by %s install.sh\n' "$SKILL_NAME" > "$tmp/$MARKER_FILE"
 
   if [ -e "$dest" ]; then
-    rm -rf "$dest"
+    fail "Install destination still exists after preparation: ${dest}"
   fi
   mv "$tmp" "$dest"
 }
@@ -58,11 +60,12 @@ prepare_master_dir() {
     mv "$MASTER_DIR" "$backup"
     log "Backed up existing master symlink ${MASTER_DIR} -> ${resolved} to ${backup}"
   elif [ -d "$MASTER_DIR" ]; then
+    local backup
+    backup="$(backup_path "$MASTER_DIR")"
     if [ -f "$MASTER_DIR/$MARKER_FILE" ]; then
-      log "Replacing managed install: ${MASTER_DIR}"
+      mv "$MASTER_DIR" "$backup"
+      log "Backed up existing managed install ${MASTER_DIR} to ${backup}"
     else
-      local backup
-      backup="$(backup_path "$MASTER_DIR")"
       mv "$MASTER_DIR" "$backup"
       log "Backed up existing non-symlink directory ${MASTER_DIR} to ${backup}"
     fi
