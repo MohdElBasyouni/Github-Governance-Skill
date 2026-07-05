@@ -1,0 +1,4 @@
+interface:
+  display_name: "GitHub Governance"
+  short_description: "Safe GitHub workflow guardrails"
+  default_prompt: "Use $github-governance-skill to keep this repository work on safe branches, reviewable PRs, and green checks before completion."
