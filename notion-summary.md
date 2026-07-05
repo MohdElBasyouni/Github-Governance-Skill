@@ -39,6 +39,9 @@ From the project directory:
 - No direct push to `main` or `master`.
 - No merge to `main` or `master` without explicit Mohamed consent.
 - Work on compliant branches only.
+- Use Conventional Commits for PR titles: `feat: ...`, `fix: ...`, `docs: ...`, `chore: ...`, `refactor: ...`, `test: ...`, or `ci: ...`.
 - Run discovered checks and configured review tools before push.
-- Verify PR checks and review comments before completion.
+- Verify PR checks and review comments before completion with `gh pr checks`, `gh pr view --comments`, and `gh run list`.
+- For CodeRabbit, review bots, and human comments, classify actionable vs non-actionable, fix actionable items, reply inline where possible, rerun checks, and summarize outcomes.
+- Recommend branch protection that requires PRs, requires passing checks, blocks direct pushes to `main`, and deletes merged PR branches where safe and consistent with repo policy. Agents must still ask Mohamed before deleting remote branches.
 - Stop and ask before force-push, remote branch deletion, history rewrite, secrets, CI/CD credential changes, production deployment config changes, or destructive filesystem actions.

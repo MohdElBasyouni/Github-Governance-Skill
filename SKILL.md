@@ -27,6 +27,18 @@ Use lowercase kebab-case descriptions:
 
 If on `main` or `master`, refuse direct work and create a compliant branch before editing.
 
+## Pull Request Title Rules
+
+PR titles must follow Conventional Commits:
+
+- `feat: ...`
+- `fix: ...`
+- `docs: ...`
+- `chore: ...`
+- `refactor: ...`
+- `test: ...`
+- `ci: ...`
+
 ## Before Push
 
 1. Check current branch with `git branch --show-current`.
@@ -44,6 +56,7 @@ If on `main` or `master`, refuse direct work and create a compliant branch befor
 When a PR exists or is created:
 
 - Check PR status and GitHub Actions/workflow checks.
+- Before reporting PR work done, run or check `gh pr checks`, `gh pr view --comments`, and `gh run list`.
 - Confirm all required checks are green before reporting completion.
 - If checks fail, read logs, fix issues, push correction commits, and re-check.
 - If checks are pending or failed, report the exact incomplete status instead of saying the task is done.
@@ -60,6 +73,15 @@ For CodeRabbit, human reviewers, GitHub bots, and other review tools:
 - Do not ignore unresolved review comments.
 - Re-run checks after changes.
 - Summarize what was addressed.
+
+## Branch Protection Recommendations
+
+Recommend repository protection rules that:
+
+- Require a pull request before merging to `main`.
+- Require status checks to pass before merging.
+- Block direct pushes to `main`.
+- Delete merged PR branches where safe and consistent with repo policy; agents must still ask Mohamed before deleting remote branches.
 
 ## Merge Workflow
 

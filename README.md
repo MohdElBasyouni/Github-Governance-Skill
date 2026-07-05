@@ -9,11 +9,21 @@ It is intentionally strict about branches, PR checks, review comments, and merge
 - No direct pushes to `main` or `master`.
 - No merges to `main` or `master` without explicit Mohamed consent.
 - Work starts on a compliant branch such as `feature/<short-description>` or `fix/<short-description>`.
+- PR titles follow Conventional Commits, such as `feat: ...`, `fix: ...`, `docs: ...`, `chore: ...`, `refactor: ...`, `test: ...`, and `ci: ...`.
 - Pre-push checks are discovered and run from repo configuration.
 - Agency Agents Code Reviewer, CodeRabbit, Plannotator, and other configured review tools are routed according to their proper roles.
-- PR checks and GitHub Actions must be green before completion is reported.
-- Review comments are read, classified, addressed, and summarized.
+- PR checks and GitHub Actions must be checked with `gh pr checks`, `gh pr view --comments`, and `gh run list` before completion is reported.
+- Review comments from CodeRabbit, review bots, and humans are read, classified, addressed, replied to inline where possible, and summarized.
 - Destructive or sensitive actions trigger stop-and-ask behavior.
+
+## Branch Protection Recommendations
+
+Recommended GitHub repository settings:
+
+- Require a PR before merging to `main`.
+- Require status checks to pass before merging.
+- Block direct pushes to `main`.
+- Delete merged PR branches where safe and consistent with repo policy; agents must still ask Mohamed before deleting remote branches.
 
 ## Install
 
