@@ -17,6 +17,18 @@ Allowed branch prefixes:
 - `test/`
 - `hotfix/`
 
+## Pull Request Titles
+
+PR titles must follow Conventional Commits:
+
+- `feat: ...`
+- `fix: ...`
+- `docs: ...`
+- `chore: ...`
+- `refactor: ...`
+- `test: ...`
+- `ci: ...`
+
 ## Required Pre-Push Workflow
 
 Before any push, the AI agent must:
@@ -51,9 +63,24 @@ Prefer commands the repo already defines. Typical checks include tests, lint, an
 
 The agent must not report completion while required checks are pending or failed. If checks fail, read logs, fix the issue, push correction commits, and re-check.
 
+Before reporting PR work done, run or check:
+
+- `gh pr checks`
+- `gh pr view --comments`
+- `gh run list`
+
 ## Review Comments
 
-Read all comments from CodeRabbit, human reviewers, GitHub bots, and other tools. Address every actionable comment, reply inline where possible, record why when inline reply is not possible, and summarize the outcome.
+Read all comments from CodeRabbit, human reviewers, GitHub bots, and other tools. Classify comments as actionable or non-actionable. Fix every actionable comment, reply inline where possible, record why when inline reply is not possible, re-run checks, and summarize the outcome.
+
+## Branch Protection Recommendations
+
+Recommend GitHub repository protection rules that:
+
+- Require a PR before merging to `main`.
+- Require status checks to pass before merging.
+- Block direct pushes to `main`.
+- Delete merged PR branches where safe and consistent with repo policy; agents must still ask Mohamed before deleting remote branches.
 
 ## Merge And Cleanup
 
