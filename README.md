@@ -23,7 +23,12 @@ Recommended GitHub repository settings:
 - Require a PR before merging to `main`.
 - Require status checks to pass before merging.
 - Block direct pushes to `main`.
-- Delete merged PR branches where safe and consistent with repo policy; agents must still ask Mohamed before deleting remote branches.
+- Enable automatic deletion of merged PR branches where safe and consistent with repo policy.
+- If automatic deletion is not enabled, agents must still ask Mohamed before deleting remote branches.
+
+## Post-Merge Cleanup
+
+After an approved merge, agents must verify the source branch is merged, delete the local merged branch, check whether the remote source branch still exists, and either delete it with explicit Mohamed approval or report that remote cleanup is pending approval. Agents must prune remote-tracking branches and report the final branch state.
 
 ## Install
 

@@ -80,11 +80,22 @@ Recommend GitHub repository protection rules that:
 - Require a PR before merging to `main`.
 - Require status checks to pass before merging.
 - Block direct pushes to `main`.
-- Delete merged PR branches where safe and consistent with repo policy; agents must still ask Mohamed before deleting remote branches.
+- Enable automatic deletion of merged PR branches where safe and consistent with repo policy.
+- If automatic deletion is not enabled, agents must still ask Mohamed before deleting remote branches.
 
 ## Merge And Cleanup
 
-Merge only after explicit Mohamed consent. Sync the target branch, verify green checks, merge by repo convention, pull latest target branch, delete local branches only after confirming they are merged, and delete remote branches only when safe, confirmed merged, not protected, and explicitly allowed by Mohamed.
+Merge only after explicit Mohamed consent. Sync the target branch, verify green checks, merge by repo convention, and pull latest target branch.
+
+After merging, the AI agent must:
+
+1. Confirm the source branch is merged into the updated target branch.
+2. Delete the local source branch when it is safely merged.
+3. Check whether the remote source branch still exists.
+4. Delete the remote source branch only when safe, confirmed merged, not protected, and explicitly allowed by Mohamed.
+5. If remote deletion is not explicitly allowed, leave the branch in place and report that cleanup is pending Mohamed approval.
+6. Fetch with prune after cleanup.
+7. Report local and remote branch cleanup clearly, including any branches intentionally left behind.
 
 ## Stop And Ask
 
