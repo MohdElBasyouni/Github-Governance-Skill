@@ -81,7 +81,8 @@ Recommend repository protection rules that:
 - Require a pull request before merging to `main`.
 - Require status checks to pass before merging.
 - Block direct pushes to `main`.
-- Delete merged PR branches where safe and consistent with repo policy; agents must still ask Mohamed before deleting remote branches.
+- Enable automatic deletion of merged PR branches where safe and consistent with repo policy.
+- If automatic deletion is not enabled, agents must still ask Mohamed before deleting remote branches.
 
 ## Merge Workflow
 
@@ -93,10 +94,13 @@ Only when Mohamed explicitly instructs a merge to `main` or `master`:
 4. Verify PR checks are green.
 5. Merge using the repo's standard method.
 6. Pull latest target branch after merge.
-7. Delete local branches only after confirming they are merged.
-8. Delete remote branches only when safe, confirmed merged, not protected, and explicitly allowed by Mohamed.
-9. Never delete protected, active, unknown, or unmerged branches.
-10. Report branch cleanup clearly.
+7. Confirm the source branch is merged into the updated target branch.
+8. Delete the local source branch when it is safely merged.
+9. Check whether the remote source branch still exists.
+10. If the remote source branch exists, delete it only when safe, confirmed merged, not protected, and explicitly allowed by Mohamed.
+11. If remote deletion is not explicitly allowed, leave the branch in place and report that cleanup is pending Mohamed approval.
+12. Fetch with prune after cleanup.
+13. Report local and remote branch cleanup clearly, including any branches intentionally left behind.
 
 ## ObjectNode Reminder
 
