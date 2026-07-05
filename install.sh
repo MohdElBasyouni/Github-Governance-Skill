@@ -41,7 +41,7 @@ sync_skill() {
   fi
   mkdir "$tmp"
   tmp_ready=1
-  trap cleanup_tmp RETURN
+  trap cleanup_tmp EXIT
 
   cp -R "$src/SKILL.md" "$tmp/"
   cp -R "$src/README.md" "$tmp/"
@@ -58,7 +58,7 @@ sync_skill() {
   fi
   mv "$tmp" "$dest"
   tmp_ready=0
-  trap - RETURN
+  trap - EXIT
 }
 
 prepare_master_dir() {
