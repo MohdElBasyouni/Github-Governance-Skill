@@ -6,33 +6,36 @@ Reusable global AI skill that enforces Mohamed's safe GitHub workflow across Cod
 
 ## Install Path
 
+Installed and updated by the `skills` CLI, which records the source so it can
+be refreshed later:
+
+```bash
+npx -y skills add MohdElBasyouni/Github-Governance-Skill -g -a '*' -y
+```
+
 Master copy:
 
 ```text
 ~/.agents/skills/github-governance-skill
 ```
 
-Exposure symlinks:
-
-```text
-~/.claude/skills/github-governance-skill
-~/.codex/skills/github-governance-skill
-```
+Exposure symlinks are created by the CLI for every agent it knows about.
+Agents that read `~/.agents/skills` directly — OpenCode among them — need none.
 
 ## Verify Command
 
-From the project directory:
-
 ```bash
-./verify.sh
+npx -y skills list
 ```
 
 ## Restore Notes
 
-1. Restore this project folder.
-2. Run `./install.sh`.
-3. Run `./verify.sh`.
-4. Confirm Claude and Codex symlinks resolve to the master skill path.
+1. Ensure Node is available.
+2. Run the `skills add` command above; it registers the source in
+   `~/.agents/.skill-lock.json`.
+3. Run `npx -y skills update -g -y` to confirm it resolves against the source.
+4. To remove it, run `npx -y skills remove github-governance-skill` so the lock
+   entry goes with the files.
 
 ## Safety Rules Summary
 

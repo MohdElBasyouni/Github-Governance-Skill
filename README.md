@@ -32,38 +32,68 @@ After an approved merge, agents must verify the source branch is merged, delete 
 
 ## Install
 
-From this project directory:
+This is a repository-root skill, so it installs with the
+[`skills`](https://github.com/vercel-labs/skills) CLI — the same source-aware
+installer used for every other skill on the machine. It records the source in
+`~/.agents/.skill-lock.json`, which is what lets `skills update` refresh it
+later.
 
 ```bash
-./install.sh
+npx -y skills add MohdElBasyouni/Github-Governance-Skill -g -a '*' -y
 ```
 
-The installer syncs the skill to:
+The skill is installed once, at:
 
 ```text
 ~/.agents/skills/github-governance-skill
 ```
 
-It also creates safe symlinks:
+and symlinked into every agent directory the CLI knows about. Agents that read
+`~/.agents/skills` directly — OpenCode among them — need no symlink at all.
 
-```text
-~/.claude/skills/github-governance-skill -> ~/.agents/skills/github-governance-skill
-~/.codex/skills/github-governance-skill -> ~/.agents/skills/github-governance-skill
+To see what the repository offers before changing anything:
+
+```bash
+npx -y skills add MohdElBasyouni/Github-Governance-Skill -l
+```
+
+### No Node?
+
+The CLI needs Node. On a machine without it, install by hand:
+
+```bash
+git clone https://github.com/MohdElBasyouni/Github-Governance-Skill.git
+cp -R Github-Governance-Skill ~/.agents/skills/github-governance-skill
+```
+
+A hand-placed copy has no recorded source, so `skills update` will not see it
+and it will silently go stale. Re-run the command above once Node is available.
+
+## Update
+
+```bash
+npx -y skills update -g -y
 ```
 
 ## Verify
 
+There is no separate verification script: the installer compares the installed
+copy against the source itself, so `skills add` and `skills update` are the
+check. To see what is registered:
+
 ```bash
-./verify.sh
+npx -y skills list
 ```
 
 ## Uninstall
 
 ```bash
-./uninstall.sh
+npx -y skills remove github-governance-skill
 ```
 
-The uninstaller removes only this skill's symlinks by default. It asks before removing the installed master copy under `~/.agents/skills`.
+This removes the installed copy, the symlinks, **and** the lock entry. Removing
+the files by hand instead leaves the lock entry behind, and the next
+`skills update` quietly reinstalls the skill.
 
 ## Remote-Ready Setup
 
