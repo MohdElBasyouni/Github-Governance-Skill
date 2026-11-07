@@ -118,7 +118,7 @@ Only when Mohamed explicitly instructs a merge to `main` or `master`:
 1. Confirm the consent is explicit.
 2. Fetch remote.
 3. Sync local `main` or `master` with origin.
-4. Verify PR checks are green.
+4. Verify PR checks are green and the Codex GitHub Review Gate above is satisfied for the current final head.
 5. Merge using the repo's standard method.
 6. Pull latest target branch after merge.
 7. Confirm the source branch is merged into the updated target branch.
