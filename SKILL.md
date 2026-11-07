@@ -61,6 +61,33 @@ When a PR exists or is created:
 - If checks fail, read logs, fix issues, push correction commits, and re-check.
 - If checks are pending or failed, report the exact incomplete status instead of saying the task is done.
 
+## Codex GitHub Review Gate
+
+Before every merge, verify the actual Codex GitHub review independently of CI:
+
+1. Read the PR's current head commit SHA, Codex review summary/results, review
+   submissions, conversation comments and inline review threads.
+2. Wait until Codex code review explicitly reports **completed for that exact
+   final head SHA**. A queued/running review, an eyes reaction, green CI, no
+   inline comments yet, or a completed review of an older commit is not a pass.
+3. Read every finding and thread. Fix and verify actionable issues, and resolve
+   their threads only after the issue is addressed. Explain non-actionable
+   findings rather than silently dismissing them. Do not merge with unresolved
+   actionable findings.
+4. Every new push invalidates the previous review gate. Rerun applicable local
+   checks/CI and wait for Codex to complete review of the new final head; request
+   a review through the repository's supported workflow if it did not trigger.
+5. Immediately before merging, re-read the PR head and confirm it still matches
+   the completed review's SHA, with no unresolved actionable findings. Use an
+   expected-head SHA merge guard when available. Report the reviewed SHA and a
+   link to the completed review evidence.
+
+If Codex review is unavailable, skipped, errored, or cannot be confirmed for the
+final head, keep the merge pending and report that specific gap. Ask how to
+proceed rather than silently bypassing the review. A review exception, if the
+user explicitly authorizes one, must be disclosed as an exception; never report
+an unreviewed commit as reviewed. No automatic timeout authorizes a merge.
+
 ## Review Comments
 
 For CodeRabbit, human reviewers, GitHub bots, and other review tools:
@@ -91,7 +118,7 @@ Only when Mohamed explicitly instructs a merge to `main` or `master`:
 1. Confirm the consent is explicit.
 2. Fetch remote.
 3. Sync local `main` or `master` with origin.
-4. Verify PR checks are green.
+4. Verify PR checks are green and the Codex GitHub Review Gate above is satisfied for the current final head.
 5. Merge using the repo's standard method.
 6. Pull latest target branch after merge.
 7. Confirm the source branch is merged into the updated target branch.
