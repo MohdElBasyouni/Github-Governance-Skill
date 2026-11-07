@@ -100,7 +100,36 @@ Only when Mohamed explicitly instructs a merge to `main` or `master`:
 10. If the remote source branch exists, delete it only when safe, confirmed merged, not protected, and explicitly allowed by Mohamed.
 11. If remote deletion is not explicitly allowed, leave the branch in place and report that cleanup is pending Mohamed approval.
 12. Fetch with prune after cleanup.
-13. Report local and remote branch cleanup clearly, including any branches intentionally left behind.
+13. Check the merged repository's local `Runbook/Runbook.md` using the Local Runbook Check below.
+14. Load the installed `laptop-migration-skill` and check the pinned merged PR for a concrete Laptop-Migration documentation gap. If the skill or migration checkout is unavailable, report that check as pending; do not install software or run a backup implicitly.
+15. Report local and remote branch cleanup, runbook status and migration-check result clearly, including any branches intentionally left behind.
+
+## Local Runbook Check
+
+For every approved PR merge, inspect the **local checkout of that repository**
+after it is synced to the merged target revision. The root must contain a
+`Runbook/` folder with `Runbook.md` inside. This is a local documentation check,
+not a request to launch the app or query production services.
+
+- Keep the runbook concise: prerequisites, dependency/setup commands, required
+  configuration variable names, how to run the code, one safe verification
+  command or expected result, and shutdown/cleanup only where relevant.
+- Derive commands from the repository's actual manifests, scripts and maintained
+  docs. For a skill/library/docs-only repository, explain how to install/use or
+  validate it rather than inventing an application startup command. Link to
+  detailed docs instead of duplicating them. Do not include credential values.
+- Verify changed entrypoints, runtime requirements and setup instructions against
+  the merged revision. Preserve valid user-authored details and unrelated work.
+- When preparing a PR, include any needed runbook correction in that branch so
+  the post-merge check can normally be a no-op. If missing or stale only after
+  merge, make the smallest authorized correction on a new branch/worktree and
+  use the normal PR/check/merge process; never edit or push the default branch.
+  When permission is missing, report the exact proposed correction and ask only
+  for that permission. Existing explicit approval still applies to its scope.
+- A runbook-only follow-up that is now correct ends the check. Do not create
+  repeated no-op PRs, commit per-merge audit logs, add CI jobs, install hooks, or
+  start a watcher. Report missing local access as a blocker rather than claiming
+  the folder was verified remotely.
 
 ## ObjectNode Reminder
 

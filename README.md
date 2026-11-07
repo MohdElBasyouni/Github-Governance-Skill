@@ -30,6 +30,20 @@ Recommended GitHub repository settings:
 
 After an approved merge, agents must verify the source branch is merged, delete the local merged branch, check whether the remote source branch still exists, and either delete it with explicit Mohamed approval or report that remote cleanup is pending approval. Agents must prune remote-tracking branches and report the final branch state.
 
+## Local runbook and migration checks
+
+Every merge checks the local repository root for `Runbook/Runbook.md` with
+concise, source-backed setup and run instructions. Preparing the runbook in the
+original PR avoids a follow-up. Missing/stale instructions are corrected only
+through the normal authorized branch/PR process, never directly on `main`.
+
+Afterward, the installed `laptop-migration-skill` checks whether that merged
+change needs a small update to the separate Laptop-Migration documentation.
+It does not back up project code/data or start migration commands. Install its
+source from the private `MohdElBasyouni/Laptop-Migration-Skill` repository with
+the source-aware skills CLI. Both checks run within the agent workflow; no
+Git hook, scheduler, extra CI workflow, or background execution is installed.
+
 ## Install
 
 This is a repository-root skill, so it installs with the
