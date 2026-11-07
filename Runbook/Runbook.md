@@ -19,7 +19,8 @@ repository, preparing a PR or performing an explicitly approved merge.
 ## Verify the workflow
 
 Read the applicable repository instructions and `SKILL.md`. A merge must report
-PR/check status, branch cleanup, the local `Runbook/Runbook.md` check and the
+PR/check status, completed Codex GitHub review evidence for the exact final
+head SHA, branch cleanup, the local `Runbook/Runbook.md` check and the
 migration-check result. The migration check may correctly report no change.
 
 No background process, Git hook or CI job is installed by these skills. There

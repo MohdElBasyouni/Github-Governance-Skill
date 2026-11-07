@@ -13,6 +13,7 @@ It is intentionally strict about branches, PR checks, review comments, and merge
 - Pre-push checks are discovered and run from repo configuration.
 - Agency Agents Code Reviewer, CodeRabbit, Plannotator, and other configured review tools are routed according to their proper roles.
 - PR checks and GitHub Actions must be checked with `gh pr checks`, `gh pr view --comments`, and `gh run list` before completion is reported.
+- Codex GitHub review must finish on the exact final PR commit before merge; read its findings and inline threads, address actionable issues, and repeat the gate after every push. Missing or failed review keeps the merge pending.
 - Review comments from CodeRabbit, review bots, and humans are read, classified, addressed, replied to inline where possible, and summarized.
 - Destructive or sensitive actions trigger stop-and-ask behavior.
 
