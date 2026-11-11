@@ -10,7 +10,7 @@ It is intentionally strict about branches, PR checks, review comments, and merge
 - No merges to `main` or `master` without explicit Mohamed consent.
 - Work starts on a compliant branch such as `feature/<short-description>` or `fix/<short-description>`.
 - PR titles follow Conventional Commits, such as `feat: ...`, `fix: ...`, `docs: ...`, `chore: ...`, `refactor: ...`, `test: ...`, and `ci: ...`.
-- Pre-push checks are discovered and run from repo configuration.
+- Hosted CI stays minimal. Run heavy validation locally before pushing and record the commands and results in the PR. Existing required checks still have to pass on the final PR head.
 - Agency Agents Code Reviewer, CodeRabbit, Plannotator, and other configured review tools are routed according to their proper roles.
 - PR checks and GitHub Actions must be checked with `gh pr checks`, `gh pr view --comments`, and `gh run list` before completion is reported.
 - Codex GitHub review must finish on the exact final PR commit before merge; read its findings and inline threads, address actionable issues, and repeat the gate after every push. Missing or failed review keeps the merge pending.

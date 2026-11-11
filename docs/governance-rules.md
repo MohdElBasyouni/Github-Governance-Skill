@@ -36,7 +36,7 @@ Before any push, the AI agent must:
 1. Check current branch.
 2. Refuse direct work on `main` or `master`.
 3. Check git status.
-4. Run available repo checks.
+4. Run applicable repo checks locally, including heavy validation, and record the commands and results in the PR.
 5. Detect repo-specific commands from common project files.
 6. Run Agency Agents Code Reviewer where available; if unavailable, report that explicitly.
 7. Run CodeRabbit where available; if unavailable, report that explicitly.
@@ -59,9 +59,13 @@ Look for checks in:
 
 Prefer commands the repo already defines. Typical checks include tests, lint, analyze, typecheck, format check, and build.
 
+Keep hosted CI to the smallest meaningful set of required gates and essential
+checks that need a hosted environment. See [Minimal CI, Local Validation](../SKILL.md#minimal-ci-local-validation)
+for how to handle blocked local validation and existing required checks.
+
 ## Pull Request Completion Rules
 
-The agent must not report completion while required checks are pending or failed. If checks fail, read logs, fix the issue, push correction commits, and re-check.
+After every push, verify that required checks pass for the exact PR head. If checks fail, read logs, fix the issue, push correction commits, and re-check. After merge, verify CI on the target branch. Report pending, failed, or unavailable checks explicitly.
 
 Before reporting PR work done, run or check:
 

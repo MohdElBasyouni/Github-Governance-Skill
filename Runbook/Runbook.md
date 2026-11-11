@@ -18,10 +18,11 @@ repository, preparing a PR or performing an explicitly approved merge.
 
 ## Verify the workflow
 
-Read the applicable repository instructions and `SKILL.md`. A merge must report
-PR/check status, completed Codex GitHub review evidence for the exact final
-head SHA, branch cleanup, the local `Runbook/Runbook.md` check and the
-migration-check result. The migration check may correctly report no change.
+Read the applicable repository instructions and `SKILL.md`. Run applicable
+heavy checks locally before pushing and record the results in the PR. A merge
+must report PR/check status, completed Codex GitHub review evidence for the
+exact final head SHA, branch cleanup, the local `Runbook/Runbook.md` check and
+the migration-check result. The migration check may correctly report no change.
 
 No background process, Git hook or CI job is installed by these skills. There
 is no server to start or stop. Edit the source repository on a branch, review

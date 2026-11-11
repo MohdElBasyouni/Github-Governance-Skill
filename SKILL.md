@@ -39,12 +39,27 @@ PR titles must follow Conventional Commits:
 - `test: ...`
 - `ci: ...`
 
+## Minimal CI, Local Validation
+
+- Keep hosted CI to the smallest meaningful set of required merge or release
+  checks and essential checks that need a hosted environment. Do not add a CI
+  workflow by default. Avoid duplicate jobs, redundant triggers, and broad
+  matrices when a single fast check can serve the same purpose.
+- Before pushing, run the applicable heavy work locally on the revision being
+  pushed: full test suites, integration tests, build matrices, and benchmarks
+  as relevant. Record the commands and outcomes in the PR. If a local check is
+  blocked, report it and what is needed to run it; do not silently move it to
+  hosted CI or count it as passed.
+- Preserve existing required checks and branch protections. Local results do
+  not satisfy required hosted checks. Reducing CI does not authorize removing
+  or bypassing a required gate.
+
 ## Before Push
 
 1. Check current branch with `git branch --show-current`.
 2. Refuse to push from `main` or `master`.
 3. Check `git status --short`.
-4. Detect and run repo checks that exist, such as tests, lint, analyze, typecheck, format check, and build.
+4. Detect and run applicable repo checks locally, such as tests, lint, analyze, typecheck, format check, and build.
 5. Discover commands from repo files including `package.json`, `pyproject.toml`, `Makefile`, `justfile`, `pubspec.yaml`, `go.mod`, `Cargo.toml`, and project instructions.
 6. Run Agency Agents Code Reviewer when available; if unavailable, report that explicitly.
 7. Run CodeRabbit when available; if unavailable, report that explicitly.
@@ -57,9 +72,9 @@ When a PR exists or is created:
 
 - Check PR status and GitHub Actions/workflow checks.
 - Before reporting PR work done, run or check `gh pr checks`, `gh pr view --comments`, and `gh run list`.
-- Confirm all required checks are green before reporting completion.
+- After every push, confirm all required checks are green for the exact current PR head SHA before reporting completion or merging. After merge, verify CI on the target branch and fix any regression through the normal PR workflow.
 - If checks fail, read logs, fix issues, push correction commits, and re-check.
-- If checks are pending or failed, report the exact incomplete status instead of saying the task is done.
+- If checks are pending, failed, or unavailable, report the exact gap and keep the merge or release pending.
 
 ## Codex GitHub Review Gate
 
@@ -106,7 +121,7 @@ For CodeRabbit, human reviewers, GitHub bots, and other review tools:
 Recommend repository protection rules that:
 
 - Require a pull request before merging to `main`.
-- Require status checks to pass before merging.
+- Require the minimal set of meaningful hosted status checks to pass before merging.
 - Block direct pushes to `main`.
 - Enable automatic deletion of merged PR branches where safe and consistent with repo policy.
 - If automatic deletion is not enabled, agents must still ask Mohamed before deleting remote branches.
@@ -120,7 +135,7 @@ Only when Mohamed explicitly instructs a merge to `main` or `master`:
 3. Sync local `main` or `master` with origin.
 4. Verify PR checks are green and the Codex GitHub Review Gate above is satisfied for the current final head.
 5. Merge using the repo's standard method.
-6. Pull latest target branch after merge.
+6. Pull the latest target branch after merge and verify its CI as described above.
 7. Confirm the source branch is merged into the updated target branch.
 8. Delete the local source branch when it is safely merged.
 9. Check whether the remote source branch still exists.
