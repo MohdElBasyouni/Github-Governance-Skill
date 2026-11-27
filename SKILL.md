@@ -10,7 +10,7 @@ description: Enforce Mohamed's safe GitHub workflow for Codex, OpenCode, Claude-
 - Never push directly to `main` or `master`.
 - Never merge to `main` or `master` without Mohamed's explicit consent.
 - Create or switch to a working branch before code changes.
-- Stop and ask before force-pushing, rewriting history, deleting remote branches, deleting untracked files, changing repo protections/settings, adding secrets, changing CI/CD credentials, touching production deployment config, or making destructive filesystem changes.
+- Stop and ask before force-pushing, rewriting history, deleting remote branches outside the approved PR cleanup below, deleting untracked files, changing repo protections/settings, adding secrets, changing CI/CD credentials, touching production deployment config, or making destructive filesystem changes.
 - Prefer small, reviewable pull requests.
 
 ## Branch Rules
@@ -124,7 +124,7 @@ Recommend repository protection rules that:
 - Require the minimal set of meaningful hosted status checks to pass before merging.
 - Block direct pushes to `main`.
 - Enable automatic deletion of merged PR branches where safe and consistent with repo policy.
-- If automatic deletion is not enabled, agents must still ask Mohamed before deleting remote branches.
+- Perform [merged PR branch cleanup](#merged-pr-branch-cleanup) after every approved merge, including when GitHub's automatic branch deletion is disabled.
 
 ## Merge Workflow
 
@@ -136,15 +136,45 @@ Only when Mohamed explicitly instructs a merge to `main` or `master`:
 4. Verify PR checks are green and the Codex GitHub Review Gate above is satisfied for the current final head.
 5. Merge using the repo's standard method.
 6. Pull the latest target branch after merge and verify its CI as described above.
-7. Confirm the source branch is merged into the updated target branch.
-8. Delete the local source branch when it is safely merged.
-9. Check whether the remote source branch still exists.
-10. If the remote source branch exists, delete it only when safe, confirmed merged, not protected, and explicitly allowed by Mohamed.
-11. If remote deletion is not explicitly allowed, leave the branch in place and report that cleanup is pending Mohamed approval.
-12. Fetch with prune after cleanup.
-13. Check the merged repository's local `Runbook/Runbook.md` using the Local Runbook Check below.
-14. Load the installed `laptop-migration-skill` and check the pinned merged PR for a concrete Laptop-Migration documentation gap. If the skill or migration checkout is unavailable, report that check as pending; do not install software or run a backup implicitly.
-15. Report local and remote branch cleanup, runbook status and migration-check result clearly, including any branches intentionally left behind.
+7. Complete the [merged PR branch cleanup](#merged-pr-branch-cleanup).
+8. Check the merged repository's local `Runbook/Runbook.md` using the Local Runbook Check below.
+9. Load the installed `laptop-migration-skill` and check the pinned merged PR for a concrete Laptop-Migration documentation gap. If the skill or migration checkout is unavailable, report that check as pending; do not install software or run a backup implicitly.
+10. Report local and remote branch cleanup, reasons for keeping any branch, runbook status, and the migration-check result.
+
+## Merged PR Branch Cleanup
+
+An explicitly approved merge also authorizes deleting that PR's source branch
+locally and remotely when the following checks pass.
+
+1. Confirm GitHub marks the PR as merged and that its recorded merge commit is
+   in the updated target branch. Match the PR's head repository, branch name,
+   and final head SHA to the merge you performed. For squash and rebase merges,
+   this verifies the merge even when the original head is outside the target's
+   commit history.
+2. Preserve `main`, `master`, the source repository's default branch, the
+   target branch, protected branches, and branches shared with other work or
+   checked out in another worktree. Leave a branch in place if its ownership,
+   protection, or use is unclear. Verify the push remote belongs to the PR's
+   head repository before deleting the remote ref.
+3. Check each existing ref independently against the merged PR head SHA. Leave
+   a ref in place if it points to a different SHA. Move the current worktree
+   to the synced target and immediately recheck the local branch SHA and
+   worktrees before deleting. Use `git branch -d` when the head is in the
+   target's history. For a squash or rebase whose original head is outside that
+   history, use `git branch -D` after those same checks.
+4. If the remote ref still exists, delete it using an explicit SHA lease
+   against the PR's head remote. That guard prevents deletion if the branch
+   moves between inspection and the push. The lease is authorized for this
+   deletion only. Force-updating a branch or rewriting commit history still
+   requires separate approval. An absent remote ref already satisfies cleanup.
+
+   ```sh
+   git push --force-with-lease="refs/heads/${branch}:${merged_head_sha}" \
+     "$head_remote" ":refs/heads/${branch}"
+   ```
+
+5. Fetch with prune and verify the local branch and the actual remote ref
+   again. Report which refs are absent and why any remaining branch was kept.
 
 ## Local Runbook Check
 

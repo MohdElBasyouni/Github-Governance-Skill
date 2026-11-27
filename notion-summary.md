@@ -47,5 +47,5 @@ npx -y skills list
 - Verify PR checks and review comments before completion with `gh pr checks`, `gh pr view --comments`, and `gh run list`.
 - For CodeRabbit, review bots, and human comments, classify actionable vs non-actionable, fix actionable items, reply inline where possible, rerun checks, and summarize outcomes.
 - Recommend branch protection that requires PRs, requires passing checks, blocks direct pushes to `main`, and enables automatic deletion of merged PR branches where safe and consistent with repo policy.
-- After approved merges, verify the source branch is merged, delete the local merged branch, check whether the remote source branch still exists, and either delete it with explicit Mohamed approval or report that remote cleanup is pending approval.
-- Stop and ask before force-push, remote branch deletion, history rewrite, secrets, CI/CD credential changes, production deployment config changes, or destructive filesystem actions.
+- After an approved merge, delete the PR's local and remote source branches once the merge and current refs are verified. Preserve protected, shared, in-use, and changed branches. Prune and report the final state. See [merged PR branch cleanup](SKILL.md#merged-pr-branch-cleanup).
+- Stop and ask before force-push, remote branch deletion outside approved PR cleanup, history rewrite, secrets, CI/CD credential changes, production deployment config changes, or destructive filesystem actions.
